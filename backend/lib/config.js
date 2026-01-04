@@ -2,7 +2,7 @@ import fs from "node:fs";
 import NodeRSA from "node-rsa";
 import { global as logger } from "../logger.js";
 
-const keysFile         = '/data/keys.json';
+const keysFile         = '/home/container/data/keys.json';
 const mysqlEngine      = 'mysql2';
 const postgresEngine   = 'pg';
 const sqliteClientName = 'sqlite3';
@@ -83,7 +83,7 @@ const configure = () => {
 		return;
 	}
 
-	const envSqliteFile = process.env.DB_SQLITE_FILE || "/data/database.sqlite";
+	const envSqliteFile = process.env.DB_SQLITE_FILE || "/home/container/data/database.sqlite";
 	logger.info(`Using Sqlite: ${envSqliteFile}`);
 	instance = {
 		database: {

@@ -123,9 +123,9 @@ const internalNginx = {
 	 */
 	getConfigName: (host_type, host_id) => {
 		if (host_type === "default") {
-			return "/data/nginx/default_host/site.conf";
+			return "/home/container/data/nginx/default_host/site.conf";
 		}
-		return `/data/nginx/${internalNginx.getFileFriendlyHostType(host_type)}/${host_id}.conf`;
+		return `/home/container/data/nginx/${internalNginx.getFileFriendlyHostType(host_type)}/${host_id}.conf`;
 	},
 
 	/**
@@ -275,7 +275,7 @@ const internalNginx = {
 
 		return new Promise((resolve, reject) => {
 			let template = null;
-			const filename = `/data/nginx/temp/letsencrypt_${certificate.id}.conf`;
+			const filename = `/home/container/data/nginx/temp/letsencrypt_${certificate.id}.conf`;
 
 			try {
 				template = fs.readFileSync(`${__dirname}/../templates/letsencrypt-request.conf`, { encoding: "utf8" });
@@ -333,7 +333,7 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	deleteLetsEncryptRequestConfig: (certificate) => {
-		const config_file = `/data/nginx/temp/letsencrypt_${certificate.id}.conf`;
+		const config_file = `/home/container/data/nginx/temp/letsencrypt_${certificate.id}.conf`;
 		return new Promise((resolve /*, reject*/) => {
 			internalNginx.deleteFile(config_file);
 			resolve();

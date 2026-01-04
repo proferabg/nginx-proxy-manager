@@ -19,10 +19,10 @@ import internalAuditLog from "./audit-log.js";
 import internalHost from "./host.js";
 import internalNginx from "./nginx.js";
 
-const letsencryptConfig = "/etc/letsencrypt.ini";
+const letsencryptConfig = "/home/container/etc/letsencrypt.ini";
 const certbotCommand = "certbot";
-const certbotLogsDir = "/data/logs";
-const certbotWorkDir = "/tmp/letsencrypt-lib";
+const certbotLogsDir = "/home/container/data/logs";
+const certbotWorkDir = "/home/container/.tmp/letsencrypt-lib";
 
 const omissions = () => {
 	return ["is_deleted", "owner.is_deleted", "meta.dns_provider_credentials"];
@@ -353,7 +353,7 @@ const internalCertificate = {
 				.map((fn) => fs.realpathSync(path.join(zipDirectory, fn)));
 
 			const downloadName = `npm-${data.id}-${Date.now()}.zip`;
-			const opName = `/tmp/${downloadName}`;
+			const opName = `/home/container/.tmp/${downloadName}`;
 
 			await internalCertificate.zipFiles(certFiles, opName);
 			debug(logger, "zip completed : ", opName);
@@ -487,7 +487,7 @@ const internalCertificate = {
 	writeCustomCert: async (certificate) => {
 		logger.info("Writing Custom Certificate:", certificate);
 
-		const dir = `/data/custom_ssl/npm-${certificate.id}`;
+		const dir = `/home/container/data/custom_ssl/npm-${certificate.id}`;
 
 		return new Promise((resolve, reject) => {
 			if (certificate.provider === "letsencrypt") {
@@ -630,7 +630,7 @@ const internalCertificate = {
 	 * @param {String}  privateKey    This is the entire key contents as a string
 	 */
 	checkPrivateKey: async (privateKey) => {
-		const filepath = await tempWrite(privateKey, "/tmp");
+		const filepath = await tempWrite(privateKey, "/home/container/.tmp");
 		const failTimeout = setTimeout(() => {
 			throw new error.ValidationError(
 				"Result Validation Error: Validation timed out. This could be due to the key being passphrase-protected.",
@@ -661,7 +661,7 @@ const internalCertificate = {
 	 */
 	getCertificateInfo: async (certificate, throwExpired) => {
 		try {
-			const filepath = await tempWrite(certificate, "/tmp");
+			const filepath = await tempWrite(certificate, "/home/container/.tmp");
 			const certData = await internalCertificate.getCertificateInfoFromFile(filepath, throwExpired);
 			fs.unlinkSync(filepath);
 			return certData;
@@ -820,8 +820,8 @@ const internalCertificate = {
 			`Requesting LetsEncrypt certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(", ")}`,
 		);
 
-		const credentialsLocation = `/etc/letsencrypt/credentials/credentials-${certificate.id}`;
-		fs.mkdirSync("/etc/letsencrypt/credentials", { recursive: true });
+		const credentialsLocation = `/home/container/etc/letsencrypt/credentials/credentials-${certificate.id}`;
+		fs.mkdirSync("/home/container/etc/letsencrypt/credentials", { recursive: true });
 		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 
 		// Whether the plugin has a --<name>-credentials argument
@@ -1019,7 +1019,7 @@ const internalCertificate = {
 
 		try {
 			const result = await utils.execFile(certbotCommand, args, adds.opts);
-			await utils.exec(`rm -f '/etc/letsencrypt/credentials/credentials-${certificate.id}' || true`);
+			await utils.exec(`rm -f '/home/container/etc/letsencrypt/credentials/credentials-${certificate.id}' || true`);
 			logger.info(result);
 			return result;
 		} catch (err) {
@@ -1097,7 +1097,7 @@ const internalCertificate = {
 		await access.can("certificates:list");
 
 		// Create a test challenge file
-		const testChallengeDir = "/data/letsencrypt-acme-challenge/.well-known/acme-challenge";
+		const testChallengeDir = "/home/container/data/letsencrypt-acme-challenge/.well-known/acme-challenge";
 		const testChallengeFile = `${testChallengeDir}/test-challenge`;
 		fs.mkdirSync(testChallengeDir, { recursive: true });
 		fs.writeFileSync(testChallengeFile, "Success", { encoding: "utf8" });
@@ -1225,7 +1225,7 @@ const internalCertificate = {
 		const opts = {};
 		if (certificate_id && dns_provider === "route53") {
 			opts.env = process.env;
-			opts.env.AWS_CONFIG_FILE = `/etc/letsencrypt/credentials/credentials-${certificate_id}`;
+			opts.env.AWS_CONFIG_FILE = `/home/container/letsencrypt/credentials/credentials-${certificate_id}`;
 		}
 
 		if (dns_provider === "duckdns") {
@@ -1236,7 +1236,7 @@ const internalCertificate = {
 	},
 
 	getLiveCertPath: (certificateId) => {
-		return `/etc/letsencrypt/live/npm-${certificateId}`;
+		return `/home/container/etc/letsencrypt/live/npm-${certificateId}`;
 	},
 };
 

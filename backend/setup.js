@@ -119,13 +119,13 @@ const setupCertbotPlugins = async () => {
 				}
 
 				// Make sure credentials file exists
-				const credentials_loc = `/etc/letsencrypt/credentials/credentials-${certificate.id}`;
+				const credentials_loc = `/home/container/etc/letsencrypt/credentials/credentials-${certificate.id}`;
 				// Escape single quotes and backslashes
 				if (typeof certificate.meta.dns_provider_credentials === "string") {
 					const escapedCredentials = certificate.meta.dns_provider_credentials
 						.replaceAll("'", "\\'")
 						.replaceAll("\\", "\\\\");
-					const credentials_cmd = `[ -f '${credentials_loc}' ] || { mkdir -p /etc/letsencrypt/credentials 2> /dev/null; echo '${escapedCredentials}' > '${credentials_loc}' && chmod 600 '${credentials_loc}'; }`;
+					const credentials_cmd = `[ -f '${credentials_loc}' ] || { mkdir -p /home/container/etc/letsencrypt/credentials 2> /dev/null; echo '${escapedCredentials}' > '${credentials_loc}' && chmod 600 '${credentials_loc}'; }`;
 					promises.push(utils.exec(credentials_cmd));
 				}
 			}
@@ -150,7 +150,7 @@ const setupLogrotation = () => {
 
 	const runLogrotate = async () => {
 		try {
-			await utils.exec("logrotate /etc/logrotate.d/nginx-proxy-manager");
+			await utils.exec("logrotate /home/container/etc/logrotate.d/nginx-proxy-manager");
 			logger.info("Logrotate completed.");
 		} catch (e) {
 			logger.warn(e);
