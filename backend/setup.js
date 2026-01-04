@@ -150,7 +150,7 @@ const setupLogrotation = () => {
 
 	const runLogrotate = async () => {
 		try {
-			await utils.exec("logrotate /home/container/etc/logrotate.d/nginx-proxy-manager");
+			await utils.exec("logrotate -s /home/container/var/lib/logrotate/status /home/container/etc/logrotate.d/nginx-proxy-manager");
 			logger.info("Logrotate completed.");
 		} catch (e) {
 			logger.warn(e);

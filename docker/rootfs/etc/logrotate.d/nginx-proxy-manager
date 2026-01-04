@@ -1,5 +1,4 @@
-/data/logs/*_access.log /data/logs/*/access.log {
-    su npm npm
+/home/container/data/logs/*_access.log /home/container/data/logs/*/access.log {
     create 0644
     weekly
     rotate 4
@@ -8,12 +7,11 @@
     compress
     sharedscripts
     postrotate
-    kill -USR1 `cat /run/nginx/nginx.pid 2>/dev/null` 2>/dev/null || true
+    kill -USR1 `cat /home/container/run/nginx/nginx.pid 2>/dev/null` 2>/dev/null || true
     endscript
 }
 
-/data/logs/*_error.log /data/logs/*/error.log {
-    su npm npm
+/home/container/data/logs/*_error.log /home/container/data/logs/*/error.log {
     create 0644
     weekly
     rotate 10
@@ -22,6 +20,6 @@
     compress
     sharedscripts
     postrotate
-    kill -USR1 `cat /run/nginx/nginx.pid 2>/dev/null` 2>/dev/null || true
+    kill -USR1 `cat /home/container/run/nginx/nginx.pid 2>/dev/null` 2>/dev/null || true
     endscript
 }
