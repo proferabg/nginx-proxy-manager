@@ -103,7 +103,7 @@ const internalNginx = {
 	 */
 	test: () => {
 		debug(logger, "Testing Nginx configuration");
-		return utils.execFile("/usr/sbin/nginx", ["-c", "/home/container/etc/nginx/nginx.conf", "-t", "-g", "error_log off;"]);
+		return utils.execFile("/usr/sbin/nginx", ["-c", "/home/container/etc/nginx/nginx.conf", "-p", "/home/container/usr/local/nginx", "-t", "-g", "error_log off;"]);
 	},
 
 	/**
@@ -112,7 +112,7 @@ const internalNginx = {
 	reload: () => {
 		return internalNginx.test().then(() => {
 			logger.info("Reloading Nginx");
-			return utils.execFile("/usr/sbin/nginx", ["-c", "/home/container/etc/nginx/nginx.conf", "-s", "reload"]);
+			return utils.execFile("/usr/sbin/nginx", ["-c", "/home/container/etc/nginx/nginx.conf", "-p", "/home/container/usr/local/nginx", "-s", "reload"]);
 		});
 	},
 
