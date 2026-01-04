@@ -162,6 +162,8 @@ const internalNginx = {
 						{ hsts_subdomains: host.hsts_subdomains },
 						{ access_list: host.access_list },
 						{ certificate: host.certificate },
+						{ http_port: process.env.HTTP_PORT || "80"},
+						{ https_port: process.env.HTTPS_PORT || "443"},
 						host.locations[i],
 					);
 
@@ -240,6 +242,8 @@ const internalNginx = {
 
 			// Set the IPv6 setting for the host
 			host.ipv6 = internalNginx.ipv6Enabled();
+			host.http_port = process.env.HTTP_PORT || "80";
+			host.https_port = process.env.HTTPS_PORT || "443";
 
 			locationsPromise.then(() => {
 				renderEngine
@@ -285,6 +289,8 @@ const internalNginx = {
 			}
 
 			certificate.ipv6 = internalNginx.ipv6Enabled();
+			certificate.http_port = process.env.HTTP_PORT || "80";
+			certificate.https_port = process.env.HTTPS_PORT || "443";
 
 			renderEngine
 				.parseAndRender(template, certificate)

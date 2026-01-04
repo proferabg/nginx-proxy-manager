@@ -104,14 +104,6 @@ const getRenderEngine = () => {
 		return "";
 	});
 
-	renderEngine.registerFilter("https_port", (v) => {
-		return process.env.HTTPS_PORT || "443";
-	})
-
-	renderEngine.registerFilter("http_port", (v) => {
-		return process.env.HTTP_PORT || "80";
-	})
-
 	return renderEngine;
 };
 
